@@ -2,6 +2,7 @@ package database.interfaces;
 
 import java.util.List;
 
+import database.classes.Department;
 import database.classes.Seller;
 
 public interface SellerDao {
@@ -11,4 +12,5 @@ public interface SellerDao {
     abstract void deleteById(Integer id);
     abstract Seller findById(Integer id);
     abstract List<Seller> findaAll();
+    abstract List<Seller> findBydepartment(Department department);
 }

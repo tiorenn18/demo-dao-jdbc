@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import database.interfaces.SellerDao;
 
@@ -45,13 +48,13 @@ public class SellerDaoJdbc implements SellerDao {
                         + "FROM seller INNER JOIN department "
                         + "ON seller.DepartmentId = department.Id "
                         + "WHERE seller.Id = ?");) {
-                            
+
             st.setInt(1, id);
             try (ResultSet rs = st.executeQuery();) {
                 if (rs.next()) {
                     Department dep = instantiaeteDepartment(rs);
                     Seller obj = instantiaeteSeller(rs, dep);
-                    return obj; 
+                    return obj;
                 }
                 return null;
             }
@@ -85,4 +88,36 @@ public class SellerDaoJdbc implements SellerDao {
         throw new UnsupportedOperationException("Unimplemented method 'findaAll'");
     }
 
+    @Override
+    public List<Seller> findBydepartment(Department department) {
+        try (PreparedStatement st = conn.prepareStatement(
+                "Select seller. *, department.Name as DepName "
+                        + "FROM seller INNER JOIN department "
+                        + "ON seller.DepartmentId = department.Id "
+                        + "WHERE department.Id = ? "
+                        + "ORDER BY Name");) {
+
+            st.setInt(1, department.getId());
+            try (ResultSet rs = st.executeQuery();) {
+                List<Seller> list = new ArrayList<>();
+                Map<Integer, Department> map = new HashMap<>();
+
+                while (rs.next()) {
+                    Department dep = map.get(rs.getInt("DepartmentId"));
+                    if (dep == null) {
+                        dep = instantiaeteDepartment(rs);
+                        map.put(rs.getInt("DepartmentId"), dep);
+                    }
+
+                    Seller obj = instantiaeteSeller(rs, dep);
+                    list.add(obj);
+                }
+                return list;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar vendedores por departamento: " + e.getMessage());
+        }
+        return new ArrayList<>();
+    }
 }
+
