@@ -4,8 +4,8 @@ import java.util.List;
 
 import database.classes.Department;
 
-public abstract class DepartmentDao {
-    
+public interface DepartmentDao {
+        
     abstract void insert (Department obj);
     abstract void update (Department obj);
     abstract void deleteById (Integer id);

@@ -19,10 +19,6 @@ public class SellerDaoJdbc implements SellerDao {
         this.conn = conn;
     }
 
-    public SellerDaoJdbc(Class<ConnectorFactory> class1) {
-        // TODO Auto-generated constructor stub
-    }
-
     @Override
     public void insert(Seller obj) {
         try (PreparedStatement st = conn.prepareStatement(
