@@ -30,9 +30,7 @@ public class SellerDaoJdbc implements SellerDao {
                         + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
                         + "VALUES "
                         + "(?, ?, ?, ?, ?)",
-                        java.sql.Statement.RETURN_GENERATED_KEYS
-            );
-        ) {
+                java.sql.Statement.RETURN_GENERATED_KEYS);) {
             st.setString(1, obj.getName());
             st.setString(2, obj.getEmail());
             st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
@@ -41,7 +39,7 @@ public class SellerDaoJdbc implements SellerDao {
 
             int rowsAffected = st.executeUpdate();
 
-            if (rowsAffected > 0 ) {
+            if (rowsAffected > 0) {
                 try (ResultSet rs = st.getGeneratedKeys()) {
                     if (rs.next()) {
                         int id = rs.getInt(1);
@@ -62,9 +60,7 @@ public class SellerDaoJdbc implements SellerDao {
         try (PreparedStatement st = conn.prepareStatement(
                 " UPDATE seller "
                         + "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? "
-                        + "WHERE ID = ?"
-            );
-        ) {
+                        + "WHERE ID = ?");) {
             st.setString(1, obj.getName());
             st.setString(2, obj.getEmail());
             st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
@@ -75,14 +71,20 @@ public class SellerDaoJdbc implements SellerDao {
             st.executeUpdate();
 
         } catch (SQLException e) {
-            e.getStackTrace();
+            e.printStackTrace();;
         }
     }
 
     @Override
     public void deleteById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        try (PreparedStatement st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
+        ) {
+            st.setInt(1, id);
+            st.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

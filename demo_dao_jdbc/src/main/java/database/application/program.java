@@ -3,6 +3,7 @@ package database.application;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import database.classes.DaoFactory;
 import database.classes.Department;
@@ -11,7 +12,8 @@ import database.interfaces.SellerDao;
 
 public class program {
     public static void main(String[] args) throws SQLException {
-
+        Scanner sc = new Scanner(System.in);
+        
         SellerDao sellerDao = DaoFactory.createSellerDao();
 
         System.out.println("=== TEST 1: Seller findById ===");
@@ -44,5 +46,13 @@ public class program {
         seller.setName("Marta Waine");
         sellerDao.update(seller);
         System.out.println("Updated Completed! ");
+
+        System.out.println("\n === TEST 6: Seller delete ===");
+        System.out.print("Digite um codígo Id: ");
+        int id = sc.nextInt();
+        sellerDao.deleteById(id);
+        System.out.println("Delete completed");
+        sc.close();
+
     }
 }
