@@ -1,6 +1,7 @@
 package database.application;
 
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 import database.classes.DaoFactory;
@@ -28,9 +29,15 @@ public class program {
 
         System.out.println("\n === TEST 3: Seller findAll ===");
         list = sellerDao.findaAll();
-        
+
         for (Seller obj : list) {
             System.out.println(obj);
         }
+
+        System.out.println("\n === TEST 4: Seller Insert ===");
+        Seller newSeller = new Seller(null, "Greg", "Greg@gmail.com", new Date(), 4000.0, department);
+        sellerDao.insert(newSeller);
+        System.out.println("Inserted! new Id = "+ newSeller.getId());
+
     }
 }

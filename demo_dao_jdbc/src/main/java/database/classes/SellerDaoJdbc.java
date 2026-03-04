@@ -25,8 +25,36 @@ public class SellerDaoJdbc implements SellerDao {
 
     @Override
     public void insert(Seller obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'insert'");
+        try (PreparedStatement st = conn.prepareStatement(
+                " INSERT INTO seller "
+                        + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+                        + "VALUES "
+                        + "(?, ?, ?, ?, ?)",
+                        java.sql.Statement.RETURN_GENERATED_KEYS
+            );
+        ) {
+            st.setString(1, obj.getName());
+            st.setString(2, obj.getEmail());
+            st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            st.setDouble(4, obj.getBaseSalary());
+            st.setInt(5, obj.getDepartment().getId());
+
+            int rowsAffected = st.executeUpdate();
+
+            if (rowsAffected > 0 ) {
+                try (ResultSet rs = st.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int id = rs.getInt(1);
+                        obj.setId(id);
+                    }
+                } catch (SQLException e) {
+                    System.out.println("Unexpected error! No rows! ");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.getStackTrace();
+        }
     }
 
     @Override
@@ -84,7 +112,7 @@ public class SellerDaoJdbc implements SellerDao {
 
     @Override
     public List<Seller> findaAll() {
-                try (PreparedStatement st = conn.prepareStatement(
+        try (PreparedStatement st = conn.prepareStatement(
                 "Select seller. *, department.Name as DepName "
                         + "FROM seller INNER JOIN department "
                         + "ON seller.DepartmentId = department.Id "
@@ -144,4 +172,3 @@ public class SellerDaoJdbc implements SellerDao {
         return new ArrayList<>();
     }
 }
-
