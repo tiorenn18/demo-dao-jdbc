@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public class SellerDaoJdbc implements SellerDao {
                         + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
                         + "VALUES "
                         + "(?, ?, ?, ?, ?)",
-                java.sql.Statement.RETURN_GENERATED_KEYS);) {
+                Statement.RETURN_GENERATED_KEYS);) {
             st.setString(1, obj.getName());
             st.setString(2, obj.getEmail());
             st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
@@ -67,17 +68,17 @@ public class SellerDaoJdbc implements SellerDao {
             st.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();;
+            e.printStackTrace();
+            ;
         }
     }
 
     @Override
     public void deleteById(Integer id) {
-        try (PreparedStatement st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");
-        ) {
+        try (PreparedStatement st = conn.prepareStatement("DELETE FROM seller WHERE Id = ?");) {
             st.setInt(1, id);
             st.executeUpdate();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,7 +126,7 @@ public class SellerDaoJdbc implements SellerDao {
     }
 
     @Override
-    public List<Seller> findaAll() {
+    public List<Seller> findAll() {
         try (PreparedStatement st = conn.prepareStatement(
                 "Select seller. *, department.Name as DepName "
                         + "FROM seller INNER JOIN department "

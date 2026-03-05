@@ -10,6 +10,6 @@ public interface DepartmentDao {
     abstract void update (Department obj);
     abstract void deleteById (Integer id);
     abstract Department findById (Integer id);
-    abstract List<Department> findaAll();
+    abstract List<Department> findAll();
 
 }
