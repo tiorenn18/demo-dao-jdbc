@@ -19,12 +19,11 @@ public class DepartmentDaojdbc implements DepartmentDao {
 
     @Override
     public void insert(Department obj) {
-       try (PreparedStatement st = conn.prepareStatement(
-            "INSERT INTO department (Name) VALUES (?)",
-                    Statement.RETURN_GENERATED_KEYS
-    );) {
+        try (PreparedStatement st = conn.prepareStatement(
+                "INSERT INTO department (Name) VALUES (?)",
+                Statement.RETURN_GENERATED_KEYS);) {
             st.setString(1, obj.getName());
-            
+
             int rowsAffected = st.executeUpdate();
             if (rowsAffected > 0) {
                 try (ResultSet rs = st.getGeneratedKeys()) {
@@ -36,24 +35,32 @@ public class DepartmentDaojdbc implements DepartmentDao {
                     e.printStackTrace();
                 }
             }
-       } catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
-       }
+        }
     }
 
     @Override
     public void update(Department obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        try (PreparedStatement st = conn.prepareStatement(
+                " UPDATE department SET Name = ? WHERE ID = ?");) {
+
+                    st.setString(1, obj.getName());
+                    st.setInt(2, obj.getId());
+
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
-         try (PreparedStatement st = conn.prepareStatement("DELETE FROM department WHERE Id = ?");
-        ) {
+        try (PreparedStatement st = conn.prepareStatement("DELETE FROM department WHERE Id = ?");) {
             st.setInt(1, id);
             st.executeUpdate();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -61,8 +68,24 @@ public class DepartmentDaojdbc implements DepartmentDao {
 
     @Override
     public Department findById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+        try (PreparedStatement st = conn.prepareStatement(
+                "SELECT * FROM department WHERE Id = ?")) {
+            st.setInt(1, id);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    Department dep = new Department();
+                    dep.setId(id);
+                    dep.setName(rs.getString("Name"));
+                    return dep;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -70,5 +93,5 @@ public class DepartmentDaojdbc implements DepartmentDao {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findaAll'");
     }
-    
+
 }
