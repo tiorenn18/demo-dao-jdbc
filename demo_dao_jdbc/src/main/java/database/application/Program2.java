@@ -12,17 +12,21 @@ public class Program2 {
 
         Scanner sc = new Scanner(System.in);
         DepartmentDao departmentDao = DepartmentDaoFactory.creatDepartmentDao();
-
+         
         System.out.println("\n === TEST 1: department Insert ===");
         Department newdepartment = new Department(null, "Carros");
         departmentDao.insert(newdepartment);
-        System.out.println("Inserted! new Id = "+ newdepartment.getId());
+        System.out.println("Inserted! new Id = " + newdepartment.getId());
 
-        System.out.println("\n === TEST 2: department ===");
+        System.out.println("\n === TEST 2: department delete ===");
         System.out.print("Digite um código Id: ");
         int id = sc.nextInt();
         departmentDao.deleteById(id);
         System.out.println("Delete completed");
         sc.close();
+
+        System.out.println("=== TEST 3: findById =======");
+		Department dep = departmentDao.findById(12);
+		System.out.println(dep);
     }
 }
