@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import database.interfaces.DepartmentDao;
 
@@ -45,8 +48,8 @@ public class DepartmentDaojdbc implements DepartmentDao {
         try (PreparedStatement st = conn.prepareStatement(
                 " UPDATE department SET Name = ? WHERE ID = ?");) {
 
-                    st.setString(1, obj.getName());
-                    st.setInt(2, obj.getId());
+            st.setString(1, obj.getName());
+            st.setInt(2, obj.getId());
 
             st.executeUpdate();
 
@@ -89,9 +92,36 @@ public class DepartmentDaojdbc implements DepartmentDao {
     }
 
     @Override
-    public List<Department> findaAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findaAll'");
+    public List<Department> findAll() {
+        try (PreparedStatement st = conn.prepareStatement(
+                "Select * From department");) {
+
+            try (ResultSet rs = st.executeQuery();) {
+                List<Department> list = new ArrayList<>();
+                Map<Integer, Department> map = new HashMap<>();
+
+                while (rs.next()) {
+                    Department dep = map.get(rs.getInt("Id"));
+                    if (dep == null) {
+                        dep = instantiaeteDepartment(rs);
+                        map.put(rs.getInt("Id"), dep);
+                    }
+
+                    Department obj = instantiaeteDepartment(rs);
+                    list.add(obj);
+                }
+                return list;
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar todos os vendedores: " + e.getMessage());
+        }
+        return new ArrayList<>();
+    }
+     private Department instantiaeteDepartment(ResultSet rs) throws SQLException {
+        Department dep = new Department();
+        dep.setId(rs.getInt("Id"));
+        dep.setName(rs.getString("Name"));
+        return dep;
     }
 
 }
